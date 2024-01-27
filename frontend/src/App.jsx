@@ -5,6 +5,8 @@ import Login from "./Pages/Login"
 import Register from "./Pages/Register"
 import Navbar from './Components/Navbar'
 import YourWardrobe from './Pages/YourWardrobe'
+import Discover from './Pages/Discover'
+import Hero from './Pages/Hero'
 
 function App() {
   return (
@@ -12,10 +14,11 @@ function App() {
       <Router>
         <Navbar />
         <Routes>
-          <Route path="/" element={<Home />}/>
+          <Route path="/" element={<Hero />}/>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/your-wardrobe" element={<YourWardrobe />} />
+          <Route path="/discover" element={<Discover />} />
         </Routes>
       </Router>
     </div>

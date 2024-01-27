@@ -1,7 +1,7 @@
-import Ellipse from "../../assets/Ellipse.png"
+import Ellipse from "../assets/Ellipse.png"
 // import Expense from "../../assets/expenses.png"
-import HomeImage from "../../assets/HomeImage.jpeg"
-import grayHomeImage from "../../assets/grayHome.webp"
+import HomeImage from "../assets/HomeImage.jpeg"
+import grayHomeImage from "../assets/grayHome.webp"
 import {Link} from "react-router-dom"
 
 function Home() {
