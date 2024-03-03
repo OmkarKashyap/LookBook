@@ -1,4 +1,4 @@
-from image_utils import feature_extraction, load_feature_list, load_filenames, recommend
+from image_utils import extract_features, load_feature_list, load_filenames, recommend
 
 def get_recommendations(uploaded_file):
     # Load precomputed features and filenames
@@ -6,7 +6,7 @@ def get_recommendations(uploaded_file):
     filenames = load_filenames()
 
     # Extract features from the uploaded image
-    features = feature_extraction(uploaded_file)
+    features = extract_features(uploaded_file)
 
     # Get recommendations based on the extracted features
     indices = recommend(features, feature_list)
