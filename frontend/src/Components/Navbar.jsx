@@ -35,7 +35,7 @@ function Navbar() {
                 <li className='py-1 duration-300 hover:scale-125'><a className="text-black cursor-pointer text-md hover:text-secondary"><Link to="/">Home</Link></a></li>
                 <li className='py-1 duration-300 hover:scale-125'><a className="text-black cursor-pointer text-md hover:text-secondary"><Link to="/your-wardrobe">Your Wardrobe</Link></a></li>
                 <li className='py-1 duration-300 hover:scale-125'><a className="text-black cursor-pointer text-md hover:text-secondary"><Link to="/discover">Discover</Link></a></li>
-                <li className='py-1 duration-300 hover:scale-125'><a className="text-black cursor-pointer text-md hover:text-secondary"><Link to="/about">About Us</Link></a></li>
+                <li className='py-1 duration-300 hover:scale-125'><a className="text-black cursor-pointer text-md hover:text-secondary"><Link to="/recommend">Recommend</Link></a></li>
             </ul>
             {!cookies.access_token ? (
             <div>
