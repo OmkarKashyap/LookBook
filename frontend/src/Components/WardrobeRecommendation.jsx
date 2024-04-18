@@ -25,7 +25,7 @@ const Recommender = () => {
                     'Content-Type': 'multipart/form-data'
                 }
             };
-            const response = await axios.post('http://localhost:6399/recommend', formData, config);
+            const response = await axios.post('http://localhost:6399/predict', formData, config);
             console.log(response.data);
             if (response.data && response.data.recommendations) {
                 setRecommendations(response.data.recommendations);

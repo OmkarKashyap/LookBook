@@ -9,3 +9,4 @@ node_modules/
 flask/venv
 flask/Recommender/data
 flask/Recommender/data2
+flask/Recommender/uploads

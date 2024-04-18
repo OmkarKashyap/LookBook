@@ -8,12 +8,16 @@ import bigHome3 from '../assets/images2/fashion3_homepage.jpg'
 import thumbnailHome1 from '../assets/images2/fashion1_homepage.webp'
 import thumbnailHome2 from '../assets/images2/fashion2_homepage.webp'
 import thumbnailHome3 from '../assets/images2/fashion3_homepage.jpg'
+import frontPage1 from "../assets/FrontPage1.jpg";
+import frontPage1Thumbnail from "../assets/FrontPage1thumbnail.jpg";
+import frontPage2Thumbnail from '../assets/Thumbnail1Final.avif';
+
 
 
 export const home = [
     {
-        thumbnail: thumbnailHome1,
-        bigHome: bigHome1,
+        thumbnail: frontPage2Thumbnail,
+        bigHome: frontPage1,
     },
     {
         thumbnail: thumbnailHome2,
