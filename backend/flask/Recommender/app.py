@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import os
 import numpy as np
@@ -17,7 +17,7 @@ model = ResNet50(weights='imagenet', include_top=False, pooling='avg')
 def extract_features_batch(image_files, model):
     features_batch = []
     for file in image_files:
-        img = keras_image.load_img(file, target_size=(224, 224))  # Load image directly from file object
+        img = keras_image.load_img(file, target_size=(224, 224))  
         img_array = keras_image.img_to_array(img)
         img_array = np.expand_dims(img_array, axis=0)
         img_array = preprocess_input(img_array)
@@ -31,7 +31,7 @@ def calculate_similarity(feature1, feature2):
 def recommend_similar_images(features, all_image_features, all_image_paths, num_recommendations=3):
     similarities = [calculate_similarity(features, feat) for feat in all_image_features]
     indices = np.argsort(similarities)[::-1][:num_recommendations]
-    recommendations = [all_image_paths[i].replace('\\', '/') for i in indices]
+    recommendations = [os.path.join(all_image_paths[i]) for i in indices]
     return recommendations
 
 def save_features_to_pickle(all_image_features, pickle_filename):
@@ -54,37 +54,25 @@ def recommend():
         if file.filename == '':
             return jsonify({'error': 'No selected file'})
 
-        # Save the file to a BytesIO object
         file_bytes = io.BytesIO()
         file.save(file_bytes)
-        file_bytes.seek(0)  # Reset the BytesIO object's position to the beginning
+        file_bytes.seek(0)
 
         features = extract_features_batch([file_bytes], model)[0]
 
         all_image_features = load_features_from_pickle('all_image_features.pkl')
         all_image_paths = load_features_from_pickle('all_image_paths.pkl')
-
+        image_path = "../../../backend/flask/Recommender/data/archive/images/"
         recommendations = recommend_similar_images(features, all_image_features, all_image_paths)
-
         return jsonify({'recommendations': recommendations})
+
     except Exception as e:
         return jsonify({'error': str(e)})
+    
+@app.route('/images/<path:filename>')
+def get_image(filename):
+    personal_images_folder = '../../../backend/flask/Recommender/data/archive/images/'
+    return send_from_directory(personal_images_folder, filename)
 
 if __name__ == '__main__':
-    if not os.path.exists('all_image_features.pkl') or not os.path.exists('all_image_paths.pkl'):
-        all_image_paths = []
-        for root, dirs, files in os.walk('data/archive/images'):
-            for file_name in files:
-                if file_name.endswith('.jpg') or file_name.endswith('.png'):
-                    img_path = os.path.join(root, file_name)
-                    all_image_paths.append(img_path)
-        batch_size = 40000
-        all_image_features = []
-        for i in range(0, len(all_image_paths), batch_size):
-            batch_paths = all_image_paths[i:i+batch_size]
-            batch_features = extract_features_batch(batch_paths, model)
-            all_image_features.extend(batch_features)
-        save_features_to_pickle(all_image_features, 'all_image_features.pkl')
-        save_features_to_pickle(all_image_paths, 'all_image_paths.pkl')
-
     app.run(host='localhost', port=6399)

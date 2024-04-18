@@ -57,7 +57,7 @@ def recommend(features):
     distances, indices = neighbors.kneighbors(features)
     return indices
 
-# # Example usage:
-# directory = 'data/'
-# features, filenames = extract_features(directory)
-# save_features(features, filenames)
+# Example usage:
+directory = 'data\\archive\\images'
+features, filenames = extract_features(directory)
+save_features(features, filenames)
