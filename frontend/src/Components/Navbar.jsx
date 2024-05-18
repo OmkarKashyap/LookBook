@@ -30,17 +30,17 @@ function Navbar() {
   return (
     <nav className='fixed top-0 left-0 z-10 w-full pt-4 pb-4 text-black rounded-sm bg-background font-Poppins'>
         <div className='container flex justify-between mx-auto'>
-            <Link to="/"><span className='text-3xl font-bold '> The Look<span className='text-3xl font-bold text-primary'>Book</span> </span></Link>
+            <Link to="/"><span className='text-3xl font-bold '> <span className='text-primary'>Nav</span>yatha<span className='text-3xl font-bold text-primary'></span> </span></Link>
             <ul className='flex items-center text-sm tracking-wide gap-x-8'>
-                <li className='py-1 duration-300 hover:scale-125'><a className="text-black cursor-pointer text-md hover:text-secondary"><Link to="/">Home</Link></a></li>
-                <li className='py-1 duration-300 hover:scale-125'><a className="text-black cursor-pointer text-md hover:text-secondary"><Link to="/your-wardrobe">Your Wardrobe</Link></a></li>
-                <li className='py-1 duration-300 hover:scale-125'><a className="text-black cursor-pointer text-md hover:text-secondary"><Link to="/discover">Discover</Link></a></li>
-                <li className='py-1 duration-300 hover:scale-125'><a className="text-black cursor-pointer text-md hover:text-secondary"><Link to="/recommend">Recommend</Link></a></li>
+                <li className='px-2 py-1 duration-300 hover:scale-125'><a className="text-black cursor-pointer text-md hover:text-primary"><Link to="/">Home</Link></a></li>
+                <li className='px-2 py-1 duration-300 hover:scale-125'><a className="text-black cursor-pointer text-md hover:text-primary"><Link to="/your-wardrobe">Your Wardrobe</Link></a></li>
+                <li className='py-1 duration-300 hover:scale-125'><a className="text-black cursor-pointer text-md hover:text-primary"><Link to="/discover">Discover</Link></a></li>
+                <li className='py-1 duration-300 hover:scale-125'><a className="text-black cursor-pointer text-md hover:text-primary"><Link to="/recommend">Recommend</Link></a></li>
             </ul>
             {!cookies.access_token ? (
             <div>
-                <button className='py-3 text-xs font-semibold tracking-wide text-black rounded-full bg-background p-7 '><Link to="/login">Login</Link></button>
-                <button className='py-3 text-xs font-semibold tracking-wide text-white rounded-full font-Poppins bg-primary px-7 hover:scale-110 duration 300'><Link to="/register">Sign Up</Link></button>
+                <button className='py-3 text-sm font-semibold tracking-wide rounded-full text-primary bg-background p-7 '><Link to="/login">Login</Link></button>
+                <button className='py-3 text-xs font-semibold tracking-wide text-white rounded-full font-Poppins bg-button px-7 hover:scale-110 duration 300'><Link to="/register">Sign Up</Link></button>
                 
             </div>
             ) : (

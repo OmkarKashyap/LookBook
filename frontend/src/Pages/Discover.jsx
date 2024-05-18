@@ -4,7 +4,7 @@ import  ProductCard  from "../Components/ProductCard";
 
 function Discover() {
   return (
-    <div id='products' className='flex flex-col items-center mt-24 max-container max-sm:mt-12 '>
+    <div id='products' className='flex flex-col items-center mt-24 max-container max-sm:mt-12 text-button '>
       <div className='mb-10 text-center'>
         <h2 className='text-4xl font-bold'>
           Our <span className='text-primary'> Popular </span> Products

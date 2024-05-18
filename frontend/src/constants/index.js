@@ -1,19 +1,23 @@
-import cloth1 from '../assets/images2/cloth1.webp'
-import cloth2 from '../assets/images2/cloth2.webp'
-import cloth3 from '../assets/images2/cloth3.webp'
-import cloth4 from '../assets/images2/cloth4.webp'
+import cloth1 from '../assets/images2/check1.png'
+import cloth2 from '../assets/images2/check5.png'
+import cloth3 from '../assets/images2/check11.png'
+import cloth4 from '../assets/images2/check8.png'
 import bigHome1 from '../assets/images2/fashion1_homepage.webp'
 import bigHome2 from '../assets/images2/fashion2_homepage.webp'
 import bigHome3 from '../assets/images2/fashion3_homepage.jpg'
 import thumbnailHome1 from '../assets/images2/fashion1_homepage.webp'
 import thumbnailHome2 from '../assets/images2/fashion2_homepage.webp'
 import thumbnailHome3 from '../assets/images2/fashion3_homepage.jpg'
+import frontPage1 from "../assets/FrontPage1.jpg";
+import frontPage1Thumbnail from "../assets/FrontPage1thumbnail.jpg";
+import frontPage2Thumbnail from '../assets/Thumbnail1Final.avif';
+
 
 
 export const home = [
     {
-        thumbnail: thumbnailHome1,
-        bigHome: bigHome1,
+        thumbnail: frontPage2Thumbnail,
+        bigHome: frontPage1,
     },
     {
         thumbnail: thumbnailHome2,
@@ -34,23 +38,23 @@ export const statistics = [
 export const products = [
     {
         imgURL: cloth1,
-        name: "Men T-Shirt",
-        price: "$19.99",
+        name: "Men's Regular Kurta",
+        price: "$80.99",
     },
     {
         imgURL: cloth2,
-        name: "Men Tapered Jeans",
-        price: "$10.10",
+        name: "Women's Chikankari Embroidered Kurti",
+        price: "$100.99",
     },
     {
         imgURL: cloth3,
-        name: "Women Sleeved Shirt",
-        price: "$22.99",
+        name: "Women's Banarasi Saree",
+        price: "$300.99",
     },
     {
         imgURL: cloth4,
-        name: "Women Sling Bag",
-        price: "$19.19",
+        name: "Men's Pure Cotton Dhoti",
+        price: "$50.99",
     },
 
 ];
