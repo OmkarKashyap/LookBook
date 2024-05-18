@@ -7,5 +7,4 @@ node_modules/
 .env
 
 flask/venv
-flask/Recommender/data
 flask/Recommender/data2

@@ -1,78 +1,85 @@
 from flask import Flask, request, jsonify, send_from_directory
-from flask_cors import CORS
-import os
-import numpy as np
+from werkzeug.utils import secure_filename
+from torchvision import models, transforms
 from PIL import Image
-from tensorflow.keras.applications.resnet50 import ResNet50, preprocess_input
-from tensorflow.keras.preprocessing import image as keras_image
-import pickle
-from io import BytesIO
-import io
+import torch
+import numpy as np
+import os
+from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
 
-model = ResNet50(weights='imagenet', include_top=False, pooling='avg')
+UPLOADS_DIR = 'uploads'
+if not os.path.exists(UPLOADS_DIR):
+    os.makedirs(UPLOADS_DIR)
 
-def extract_features_batch(image_files, model):
-    features_batch = []
-    for file in image_files:
-        img = keras_image.load_img(file, target_size=(224, 224))  
-        img_array = keras_image.img_to_array(img)
-        img_array = np.expand_dims(img_array, axis=0)
-        img_array = preprocess_input(img_array)
-        features = model.predict(img_array)
-        features_batch.append(features.flatten())
-    return features_batch
+# Load pre-trained ResNet50 model
+try:
+    model = models.resnet50(pretrained=True)
+    model.eval()
+except Exception as e:
+    print("Error loading pre-trained ResNet50 model:", e)
 
-def calculate_similarity(feature1, feature2):
-    return np.dot(feature1, feature2) / (np.linalg.norm(feature1) * np.linalg.norm(feature2))
+preprocess = transforms.Compose([
+    transforms.Resize(256),
+    transforms.CenterCrop(224),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+])
 
-def recommend_similar_images(features, all_image_features, all_image_paths, num_recommendations=3):
-    similarities = [calculate_similarity(features, feat) for feat in all_image_features]
-    indices = np.argsort(similarities)[::-1][:num_recommendations]
-    recommendations = [os.path.join(all_image_paths[i]) for i in indices]
-    return recommendations
+dataset_dir = 'D:\\Projects\\LookBook\\backend\\flask\\Recommender\\data\\archive\\images'
 
-def save_features_to_pickle(all_image_features, pickle_filename):
-    with open(pickle_filename, 'wb') as f:
-        pickle.dump(all_image_features, f)
+# Create a dictionary to store mappings between dataset filenames and base filenames
+filename_mappings = {}
+for filename in os.listdir(dataset_dir):
+    base_filename = os.path.splitext(os.path.basename(filename))[0]
+    filename_mappings[base_filename] = filename
 
-def load_features_from_pickle(pickle_filename):
-    with open(pickle_filename, 'rb') as f:
-        all_image_features = pickle.load(f)
-    return all_image_features
-
-@app.route('/recommend', methods=['POST'])
-def recommend():
+def get_image_embedding(image_path):
     try:
-        if 'file' not in request.files:
-            return jsonify({'error': 'No file part'})
-
-        file = request.files['file']
-
-        if file.filename == '':
-            return jsonify({'error': 'No selected file'})
-
-        file_bytes = io.BytesIO()
-        file.save(file_bytes)
-        file_bytes.seek(0)
-
-        features = extract_features_batch([file_bytes], model)[0]
-
-        all_image_features = load_features_from_pickle('all_image_features.pkl')
-        all_image_paths = load_features_from_pickle('all_image_paths.pkl')
-        image_path = "../../../backend/flask/Recommender/data/archive/images/"
-        recommendations = recommend_similar_images(features, all_image_features, all_image_paths)
-        return jsonify({'recommendations': recommendations})
-
+        image = Image.open(image_path)
+        image = preprocess(image)
+        image = torch.unsqueeze(image, 0)
+        with torch.no_grad():
+            embedding = model(image)
+        return embedding.numpy().flatten()
     except Exception as e:
-        return jsonify({'error': str(e)})
-    
-@app.route('/images/<path:filename>')
-def get_image(filename):
-    personal_images_folder = '../../../backend/flask/Recommender/data/archive/images/'
-    return send_from_directory(personal_images_folder, filename)
+        print("Error processing image:", e)
+        return None
+
+def cosine_similarity(a, b):
+    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    try:
+        file = request.files['file']
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(UPLOADS_DIR, filename)
+        file.save(file_path)
+        uploaded_embedding = get_image_embedding(file_path)
+        if uploaded_embedding is None:
+            return jsonify({'error': 'Failed to process uploaded image'}), 500
+        similarity_scores = []
+        for dataset_filename, dataset_path in filename_mappings.items():
+            image_path = os.path.join(dataset_dir, dataset_path)
+            dataset_embedding = get_image_embedding(image_path)
+            if dataset_embedding is not None:
+                similarity = cosine_similarity(uploaded_embedding, dataset_embedding)
+                similarity_scores.append((image_path, similarity))
+        similarity_scores.sort(key=lambda x: x[1], reverse=True)
+        
+        base_url = 'http://localhost:6399/'
+        top_image_urls = [f"{base_url}uploads/{os.path.basename(x[0])}" for x in similarity_scores[:5]]
+        return jsonify(top_image_urls)
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({'error': 'Internal Server Error'}), 500
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(UPLOADS_DIR, filename)
 
 if __name__ == '__main__':
     app.run(host='localhost', port=6399)
